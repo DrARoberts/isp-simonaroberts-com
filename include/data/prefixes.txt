@@ -1,0 +1,156 @@
+##
+## Chronolabs Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+##
+## You may not change or alter any portion of this comment or credits
+## of supporting developers from this source code or any supporting source code
+## which is considered copyrighted (c) material of the original comment or credit authors.
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+##
+## @filesource
+## @copyright       	Chronolabs Cooperative http://labs.coop
+## @license         	General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+## @license		End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+## @license		Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+## @license		General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+## @category		signed
+## @since           	2.1.9
+## @version		2.2.0
+## @author          	Simon Antony Roberts <wishcraft@users.sourceforge.net>
+## @author          	Australian Passport: M8747409 <faultticket@gmail.com>
+## @ingroup		module
+## @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+## @link		Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+## @link		Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+## @link		XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+## @see			Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+##
+## ::[ DATA START ]::
+Bishop
+Br (Brother)
+Dame
+Sr (Sister)
+Abbot
+Able Seaman
+Admiral
+Air Chief Marshal
+Air Commodore
+Air Marshal
+Air Vice Marshal
+Aircraftman
+Aircraftwoman
+Alderman
+Ambassador
+Archbishop
+Archdeacon
+Associate Professor
+Baron
+Baroness
+Bombardier
+Brigadier
+Cadet
+Canon
+Captain (Navy)
+Cardinal
+Chaplain
+Chief Petty Officer
+Colonel
+Commander
+Commissioner
+Commodore
+Constable
+Consul
+Corporal
+Count
+Countess
+Crown Prince
+Crown Princess
+Deacon
+Deaconess
+Dean
+Deputy Superintendent
+Director
+Earl
+Engineer
+Esteemed
+Emperor
+Emperess
+Flight Lieutenant
+Flight Sergeant
+Flying Officer
+General
+Goshi
+Governor
+Grace
+Grand
+Group Captain
+Judge
+Justice
+Lance Bombardier
+Lance Corporal
+Leading Aircraftman
+Leading Aircraftwoman
+Leading Seaman
+Lieutenant (ARMY)
+Lieutenant (NAVY)
+Lieutenant Colonel
+Lieutenant Commander
+Lieutenant General
+Lieutenant Governor
+Lord
+Madam
+Madame
+Major
+Major General
+Manager
+Mayor
+Mayoress
+Midshipman
+Minister
+Monsignor
+Most Reverend
+Mother
+Nurse
+Officer Cadet
+Pastor
+Petty Officer
+Pilot Officer
+Principle
+Prince
+Princess
+Crown Prince
+Crown Princess
+Private
+Rabbi
+Rear Admiral
+Rector
+Regimental Sergeant Major
+Regimental Sergeant Major of the Army
+Right Honourable
+Right Reverend
+Seaman
+Second Lieutenant
+Senator
+Senior
+Sergeant
+Sister Superior
+Squadron Leader
+Staff Cadet
+Staff Sergeant
+Station Master
+Sub lieutenant
+Superintendent
+Swami
+Vice Admiral
+Vice Commander
+Viscount
+Warrant Officer (AIR FORCE)
+Warrant Officer (NAVY)
+Warrant Officer Class 1
+Warrant Officer Class 2
+Warrant Officer of the Air Force
+Warrant Officer of the Navy
+Wing Commander
+## ::[ DATA END ]::
+## SEALED BY: Simon Antony Roberts (M8747409) - 12 Jul 2019 0305 AEST

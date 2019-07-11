@@ -1,0 +1,6 @@
+        <item>
+            <title>%title</title>
+            <description>The NTP Service %hostname:%port has been adveraged pinging time of %pinging and will be pinged again on %pinged.&lt;br /&gt;&lt;br /&gt;You have had Uptime: %uptime&lt;br /&gt;You have had Downtime: %downtime&lt;br /&gt;&lt;br /&gt;%companyname ~ &lt;a href=&quot;%companyurl&quot; target=&quot;_blank&quot;&gt;%companyurl&lt;/a&gt;&lt;br /&gt;%name ~ &lt;a href=&quot;%nameurl&quot; target=&quot;_blank&quot;&gt;%nameurl&lt;/a&gt;</description>
+            <pubDate>%pubDate</pubDate>
+            <guid>%guid</guid>
+        </item>

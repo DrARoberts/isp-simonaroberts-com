@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>%title</title>
+        <description>%desc</description>
+        <lastBuildDate>%lastbuild</lastBuildDate>
+        <docs>http://backend.userland.com/rss/</docs>
+        <generator>ntp-api</generator>
+        <category>NTP Services</category>
+        <managingEditor>wishcraft@users.sourceforge.net</managingEditor>
+        <webMaster>chronolabscoop@users.sourceforge.net</webMaster>
+        <language>en</language>
+        <image>
+            <title>%title</title>
+            <url>%image_url</url>
+            <width>%image_width</width>
+            <height>%image_height</height>
+        </image><items>
+        %items
+        </items></channel>
+</rss>

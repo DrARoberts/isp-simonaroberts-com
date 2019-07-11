@@ -1,0 +1,1 @@
+<?php echo serialize(array('vcf5' => array("..."))); ?>

@@ -1,0 +1,36 @@
+###
+## /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+##
+## You may not change or alter any portion of this comment or credits
+## of supporting developers from this source code or any supporting source code
+## which is considered copyrighted (c) material of the original comment or credit authors.
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+##
+## @copyright       Chronolabs Cooperative https://github.com/Chronolabs-Cooperative
+## @license         ACADEMIC APL 2 (https://sourceforge.net/u/chronolabscoop/wiki/Academic%20Public%20License%2C%20version%202.0/)
+## @license         GNU GPL 3 (http://www.gnu.org/licenses/gpl.html)
+## @package         ntp-conf
+## @since           1.0.1
+%authors
+## @version         1.0.1
+## @description		/etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+%links
+## 
+##
+
+# Enable this if you want statistics to be logged.
+statsdir /var/log/ntpstats/
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+# Specify one or more NTP pools + servers.
+%pools
+%servers
+server ntp.snails.email
+
+##### Generated: YYYY/MM/DD HH:II:SS ####### SOURCE URL: %url ####### SOURCE IP: %ip ########
+###################################################################################################################################################################
