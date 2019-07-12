@@ -33,8 +33,11 @@ Miss|Miss
 Ms|Mission
 Mx|Anonymous
 Mstr|Master
+Jr|Junior
+Jn|John
 Capt|Captain
 Prof|Professor
+Asso|Associated Professor
 Est|Esteemed
 Dr|Doctor
 Fr|Father
