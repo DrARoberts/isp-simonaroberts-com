@@ -58,6 +58,7 @@ DROP TABLE IF EXISTS `lists__claimableservices`;
 CREATE TABLE `lists__claimableservices` (
   `id` bigint(32) unsigned NOT NULL AUTO_INCREMENT,
   `state` enum('bucky','claimed') NOT NULL DEFAULT 'bucky',
+  `key-session` varchar(128) NOT NULL DEFAULT '',
   `key-host` varchar(128) NOT NULL DEFAULT '',
   `key-isp` varchar(128) NOT NULL DEFAULT '',
   `key-carrier` varchar(128) NOT NULL DEFAULT '',
@@ -270,16 +271,34 @@ DROP TABLE IF EXISTS `lists__lists`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lists__lists` (
   `id` int(4) unsigned NOT NULL AUTO_INCREMENT,
-  `modal` enum('host','isp','carrier','registrar','') DEFAULT '',
+  `key` varchar(128) NOT NULL DEFAULT '',
+  `state` enum('Online','Ignore','Query') NOT NULL DEFAULT 'Online',
+  `modal` varchar(32) NOT NULL DEFAULT '',
   `primary` enum('Yes','No') DEFAULT 'No',
   `ssl` enum('Yes','No') DEFAULT 'No',
+  `syndicate` enum('Yes','No') DEFAULT 'Yes',
   `hostname` varchar(128) NOT NULL DEFAULT 'simonaroberts.com',
   `title` varchar(128) NOT NULL DEFAULT '',
-  `auth-uri` varchar(128) NOT NULL DEFAULT '/v1/%s/%s/auth.api',
-  `callback-uri` varchar(128) NOT NULL DEFAULT '/v1/%s/%s/%s/callback.api',
+  `feed-uri` varchar(128) NOT NULL DEFAULT '/v1/%mode.rss?%number',
+  `keyword-uri` varchar(128) NOT NULL DEFAULT '/v1/%keyword.html',
+  `service-uri` varchar(128) NOT NULL DEFAULT '/v1/%key/%companyname.html',
+  `auth-uri` varchar(128) NOT NULL DEFAULT '/v1/%mode/%key/auth.%format',
+  `callback-uri` varchar(128) NOT NULL DEFAULT '/v1/%state/%mode/%key/callback.%format',
+  `services-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `claimableservices-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `companies-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `departments-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `emailaddresses-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `names-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `people-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `urls-total` int(11) unsigned NOT NULL DEFAULT '0',
   `tweets-average-hour` double(22,12) unsigned NOT NULL DEFAULT '0.000000000000',
   `tweets-hour` int(11) unsigned NOT NULL DEFAULT '0',
   `tweets-total` int(11) unsigned NOT NULL DEFAULT '0',
+  `tweets-start` int(11) unsigned NOT NULL DEFAULT '0',
+  `tweets-end` int(11) unsigned NOT NULL DEFAULT '0',
+  `tweets-next` int(11) unsigned NOT NULL DEFAULT '0',
+  `sydnicated` int(11) unsigned NOT NULL DEFAULT '0',
   `pulled` int(11) unsigned NOT NULL DEFAULT '0',
   `pushed` int(11) unsigned NOT NULL DEFAULT '0',
   `tweeted` int(11) unsigned NOT NULL DEFAULT '0',
@@ -461,4 +480,4 @@ CREATE TABLE `lists__urls` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-21 11:31:32
+-- Dump completed on 2019-07-22  1:59:47
