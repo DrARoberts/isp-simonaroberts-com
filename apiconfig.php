@@ -59,3 +59,13 @@ mt_srand(mt_rand(time(), microtime(true) * time() * time()));
 mt_srand(mt_rand(time(), microtime(true) * time() * time()));
 mt_srand(mt_rand(time(), microtime(true) * time() * time()));
 srand(mt_rand(time(), microtime(true) * time() * time()));
+
+$sql = "SELECT `twitter-user`, `consumer-api-key`, `consumer-api-secret-key`, `access-token-key`, `access-token-secret-key` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE `hostname` LIKE '" . parse_url(API_URL, PHP_URL_HOST) . "'";
+list($twitteruser, $consumerkey, $consumersecretkey, $accesstoken, $accesstokensecret) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
+$GLOBALS['twitter']['settings']['oauth_access_token'] = $accesstoken;
+$GLOBALS['twitter']['settings']['oauth_access_token_secret'] = $accesstokensecret;
+$GLOBALS['twitter']['settings']['consumer_key'] = $consumerkey;
+$GLOBALS['twitter']['settings']['consumer_secret'] = $consumersecretkey;
+$GLOBALS['twitter']['username'] = $twitteruser;
+
+

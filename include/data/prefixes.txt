@@ -28,9 +28,9 @@
 ##
 ## ::[ DATA START ]::
 Bishop
-Br (Brother)
+Br|Brother
 Dame
-Sr (Sister)
+Sr|Sister
 Abbot
 Able Seaman
 Admiral

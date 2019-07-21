@@ -3,12 +3,7 @@ php_value upload_max_filesize 10M
 php_value post_max_size 10M
 
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-RewriteRule ^([a-z0-9]{2})/(addclaim).(php|serial|json|xml|api)$ ./index.php?version=$1&mode=$2&format=$3 [L,NC,QSA]
-RewriteRule ^([a-z0-9]{2})/ntp.conf$ ./index.php?version=$1&mode=ntp.conf&format=conf [L,NC,QSA]
-RewriteRule ^([a-z0-9]{2})/(top|new|worse).(rss)$ ./index.php?version=$1&mode=$2&format=$3 [L,NC,QSA]
-RewriteRule ^([a-z0-9]{2})/(online|offline|pings|uptime|downtime|nextping).(php|serial|json|xml)$ ./index.php?version=$1&mode=$2&format=$3 [L,NC,QSA]
+RewriteRule ^([a-z0-9]{2})/addclaim.api$ ./index.php?version=$1 [L,NC,QSA]
+RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/claim.html$ ./claim.php?version=$1&key=$2 [L,NC,QSA]
 
 

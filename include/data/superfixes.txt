@@ -33,11 +33,8 @@ Miss|Miss
 Ms|Mission
 Mx|Anonymous
 Mstr|Master
-Jr|Junior
-Jn|John
 Capt|Captain
 Prof|Professor
-Asso|Associated Professor
 Est|Esteemed
 Dr|Doctor
 Fr|Father
@@ -46,7 +43,7 @@ Dis|Dishonorable
 Lady|Lady
 Rev|Reverend
 Sir|Sir
-Cele|Celebrity
+Cel|Celebrity
 Hbo|Hobo
 ## ::[ DATA END ]::
-## SEALED BY: Simon Antony Roberts (M8747409) - 12 Jul 2019 0354 AEST
+## SEALED BY: Simon Antony Roberts (M8747409) - 12 Jul 2019 0317 AEST

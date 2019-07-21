@@ -25,8 +25,19 @@
  * 
  */
 
+session_start();
+
 $sql = "SELECT `title` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE `hostname` LIKE '" . parse_url(API_URL, PHP_URL_HOST) . "'";
 list($pagetitle) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
+
+if (empty($_SESSION['twitter']['user']['username']) && empty($_SESSION['twitter']['request'])) { 
+    require_once __DIR__ . DS . 'class' . DS . 'TwitterAPIExchange.php';
+    $url = 'https://api.twitter.com/oauth/request_token';
+    $request_method = 'POST';
+    $twitter_instance = new TwitterAPIExchange($GLOBALS['twitter']['settings']);
+    $query = $twitter_instance->setPostfields(array('oauth_callback' => API_URL . '/kickback.php'))->buildOauth($url, $request_method)->performRequest();
+    parse_str($query, $_SESSION['twitter']['request']);
+}
 
     ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -93,6 +104,7 @@ list($pagetitle) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
 <div class="main">
 	<img style="float: right; margin: 11px; width: auto; height: auto; clear: none;" src="<?php echo API_URL; ?>/assets/images/logo_350x350.png" />
     <h1><?php echo $pagetitle; ?> -- <?php echo API_LICENSE_COMPANY; ?></h1>
+    <p><?php if (!isset($_SESSION['twitter']['user']['username'])) { ?>Authenticate with Twitter: <a href="https://api.twitter.com/oauth/authorize?oauth_token=<?php echo $_SESSION['twitter']['request']['oauth_token']; ?>" />Click here to Authenticate Now! </a> <?php } else { ?>Authenticated: <a href="https://twitter.com/<?php echo $_SESSION['twitter']['user']['username']; ?>" target="_blank"><?php echo $_SESSION['twitter']['user']['username']; ?></a><?php } ?></p>
     <p>As an API, this allows you to anonymously without authentication add either claim to start adding yourself to the database for the <?php echo strtolower($pagetitle); ?>.</p>
 	<h2>ADDCLAIM Document Output</h2>
     <p>This is done with the <em>addclaim.api</em> extension at the end of the url, you replace the example address with either a domain!</p>

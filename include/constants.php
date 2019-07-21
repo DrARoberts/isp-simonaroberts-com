@@ -25,3 +25,8 @@
  * 
  */
 
+define('GOOGLE_API_KEY', 'AIzaSyBGZGuSXIkPWq3on49h7c18isduFRKsnDA');
+
+
+// tweets
+define('TWEETS_CLAIM_REPLY', 'Welcome @%s to %s --> use this URL to activate records: %s via @%s');

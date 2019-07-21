@@ -27,7 +27,6 @@
 ## @see			Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
 ##
 ## ::[ DATA START ]::
-Junior
 Member of Parliament
 Queens Counsel
 Senior

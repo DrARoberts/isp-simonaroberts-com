@@ -1117,6 +1117,9 @@ if (!function_exists("getBaseDomain")) {
     function getBaseDomain($uri = '')
     {
         
+        if (!defined('API_STRATA_API_URL'))
+            define('API_STRATA_API_URL', 'http://strata.snails.email');
+        
         static $fallout, $strata, $classes;
 
         if (empty($classes))
