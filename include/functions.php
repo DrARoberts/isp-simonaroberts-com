@@ -26,6 +26,9 @@
  */
 
 
+require_once __DIR__ . DS . 'functions.php2asp.php';
+
+
 if (!function_exists("formatRssTimestamp")) {
     function formatRssTimestamp($time)
     {
@@ -34,16 +37,54 @@ if (!function_exists("formatRssTimestamp")) {
     }
 }
 
+if (!function_exists("addTweetCount")) {
+    
+    function addTweetCount($number = 1, $hostname = '', $username = '', $syndicate = true)
+    {
+        global $modalsyndicate;
+        
+        if (empty($hostname))
+            $hostname = parse_url(API_URL, PHP_URL_HOST);
+        
+        if (empty($username))
+            $username = $GLOBALS['twitter']['username'];
+            
+        foreach($modalsyndicate['Online'] as $modal => $hostnames)
+            foreach($hostnames as $listhostname => $ssls)
+                if ($hostname == $listhostname)
+                    foreach($ssls as $ssl => $keyhashes)
+                        foreach($keyhashes as $keyhash => $values) {
+                            $kkeyhash = $keyhash;
+                            $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF("UPDATE `" . $GLOBALS['APIDB']->prefix('lists') . "` SET `tweets-total` = `tweets-total` + $number, `tweets-hour` = `tweets-hour` + $number WHERE `key` = '" . $GLOBALS['APIDB']->escape($keyhash) . "'"));
+                        }
+                    
+        if (isset($kkeyhash))
+            foreach($modalsyndicate as $state => $states)
+                foreach($states as $modal => $hostnames)
+                    foreach($hostnames as $listhostname => $ssls)
+                        if ($hostname != $listhostname && $syndicate == true)
+                            foreach($ssls as $ssl => $keyhashes) 
+                                foreach($keyhashes as $keyhash => $values) {
+                                    $authjson = json_decode(getURIData(($ssl=='Yes'?'https://':'http://') . $listhostname . str_replace('%mode', 'lists', str_replace('%key', $kkeyhash, str_replace('%format', 'json', $values['auth-uri']))), 120, 120, array()), true);
+                                    if (isset($authjson['authkey']) && !empty($authjson['authkey']))
+                                        @getURIData(($ssl=='Yes'?'https://':'http://') . $listhostname . str_replace('%mode', 'lists', str_replace('%state', __FUNCTION__, str_replace('%key', $kkeyhash, str_replace('%format', 'json', $values['callback-uri'])))), 120, 120, array('authkey' => $authjson['authkey'], 'number' => $number));
+                                }
+        return true;
+    }
+}
+
 if (!function_exists("addClaim")) {
 
-    function addClaim($hostnames, $name, $nameemail, $nameurl, $nametwitterurl, $companyname, $companyemails, $companyrbn, $companyrbntype, $companytype, $companyurl, $companytwitterurls, $keyhost, $keyisp, $keycarrier, $keyregistrar, $format) 
-    {   
+    function addClaim($hostnames, $name, $nameemail, $nameurl, $nametwitterurl, $companyname, $companyemails, $companyrbn, $companyrbntype, $companytype, $companyurl, $companytwitterurls, $keyhost, $keyisp, $keycarrier, $keyregistrar, $keysession, $format) 
+    {
+        if (empty($keysession))
+            $keysession = md5(microtime(true) . $hostnames . $name . $nameemail . $nameurl . $nametwitterurl . $companyname . $companyemails . $companyrbn . $companyrbntype . $companytype . $companyurl . $companytwitterurls);
         $hostnames = json_encode(explode("\n", $hostnames));
         $companyemails = json_encode(explode("\n", $companyemails));
         $companytwitterurls = json_encode(explode("\n", $companytwitterurls));
         list($count) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF("SELECT count(*) as `count` FROM `" . $GLOBALS['APIDB']->prefix('ntpservices') . "` WHERE `hostnames` = '" . $GLOBALS['APIDB']->escape($hostnames) . ""));
         if ($count == 0) {
-            $sql = "INSERT INTO `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` (`state`, `hostnames`, `name`, `nameemail`, `nameurl`, `nametwitterurl`, `companyname`, `companyemails`, `companyrbn`, `companyrbntype`, `companytype`, `companyurl`, `companytwitterurls`, `key-host`, `key-isp`, `key-carrier`, `key-registrar`) VALUES('bucky', '" . $GLOBALS['APIDB']->escape($hostnames) . "', '" . $GLOBALS['APIDB']->escape($name) . "', '" . $GLOBALS['APIDB']->escape($nameemail) . "', '" . $GLOBALS['APIDB']->escape($nameurl) . "', '" . $GLOBALS['APIDB']->escape($nametwitterurl) . "', '" . $GLOBALS['APIDB']->escape($companyname) . "', '" . $GLOBALS['APIDB']->escape($companyemails) . "', '" . $GLOBALS['APIDB']->escape($companyrbn) . "', '" . $GLOBALS['APIDB']->escape($companyrbntype) . "', '" . $GLOBALS['APIDB']->escape($companytype) . "', '" . $GLOBALS['APIDB']->escape($companyurl) . "', '" . $GLOBALS['APIDB']->escape($companytwitterurls) . "', '" . $GLOBALS['APIDB']->escape($keyhost) . "', '" . $GLOBALS['APIDB']->escape($keyisp) . "', '" . $GLOBALS['APIDB']->escape($keycarrier) . "', '" . $GLOBALS['APIDB']->escape($keyregistrar) . "')";
+            $sql = "INSERT INTO `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` (`state`, `hostnames`, `name`, `nameemail`, `nameurl`, `nametwitterurl`, `companyname`, `companyemails`, `companyrbn`, `companyrbntype`, `companytype`, `companyurl`, `companytwitterurls`, `key-host`, `key-isp`, `key-carrier`, `key-registrar`, `key-session`) VALUES('bucky', '" . $GLOBALS['APIDB']->escape($hostnames) . "', '" . $GLOBALS['APIDB']->escape($name) . "', '" . $GLOBALS['APIDB']->escape($nameemail) . "', '" . $GLOBALS['APIDB']->escape($nameurl) . "', '" . $GLOBALS['APIDB']->escape($nametwitterurl) . "', '" . $GLOBALS['APIDB']->escape($companyname) . "', '" . $GLOBALS['APIDB']->escape($companyemails) . "', '" . $GLOBALS['APIDB']->escape($companyrbn) . "', '" . $GLOBALS['APIDB']->escape($companyrbntype) . "', '" . $GLOBALS['APIDB']->escape($companytype) . "', '" . $GLOBALS['APIDB']->escape($companyurl) . "', '" . $GLOBALS['APIDB']->escape($companytwitterurls) . "', '" . $GLOBALS['APIDB']->escape($keyhost) . "', '" . $GLOBALS['APIDB']->escape($keyisp) . "', '" . $GLOBALS['APIDB']->escape($keycarrier) . "', '" . $GLOBALS['APIDB']->escape($keyregistrar) . "', '" . $GLOBALS['APIDB']->escape($keysession) . "')";
             if (file_exists(dirname(__DIR__) . DS . 'crons' . DS . 'querys.sql'))
                 $querys = file_get_contents(dirname(__DIR__) . DS . 'crons' . DS . 'querys.sql');
             else
@@ -828,7 +869,7 @@ function getHTMLForm($mode = '', $var = '')
             break;
         case "addclaim":
             $form[] = "<form name='add-claim' method=\"POST\" enctype=\"multipart/form-data\" action=\"" . API_URL . '/v1/addclaim.api">';
-            $form[] = "\t<table class='add-ntp' id='auth-key' style='vertical-align: top !important; min-width: 98%;'>";
+            $form[] = "\t<table class='add-claim' id='add-claim' style='vertical-align: top !important; min-width: 98%;'>";
             $form[] = "\t\t<tr>";
             $form[] = "\t\t\t<td style='width: 499px;'>";
             $form[] = "\t\t\t\t<label for='hostnames'>ISP Hostname's:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font><br/><font style='color: rgb(50,110,166); font-size: 79%; font-weight: 400'>(Seperated by a new line!)</font></label>";

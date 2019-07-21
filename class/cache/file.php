@@ -93,7 +93,7 @@ class APICacheFile extends APICacheEngine
             'extension' => '.php',
             'prefix'    => 'api_',
             'lock'      => false,
-            'serialize' => true,
+            'serialize' => false,
             'duration'  => 31556926);
         $this->settings = array_merge($defaults, $this->settings);
         if (!isset($this->file)) {

@@ -55,7 +55,8 @@ if ($staters = APICache::read(basename(__FILE__)))
     $seconds = 1800;
 }
 
-$sql = "SELECT * FROM `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` WHERE `companytwitterurls` LIKE  '[\"\"]' AND `finished` = 0 ORDER BY RAND() asc LIMIT " . mt_rand(5, 19);
+
+$sql = "SELECT * FROM `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` WHERE `companytwitterurls` LIKE  '[\"\"]' AND `finished` = 0 ORDER BY RAND() asc LIMIT " . mt_rand(8, 50);
 $result = $GLOBALS['APIDB']->queryF($sql);
 while($claims = $GLOBALS['APIDB']->fetchArray($result)) {
     $page=0;
@@ -72,7 +73,8 @@ while($claims = $GLOBALS['APIDB']->fetchArray($result)) {
                         $claims['companytwitterurls'] = json_decode($claims['companytwitterurls'], true);
                     elseif (!is_array($claims['companytwitterurls']) && $claims['companytwitterurls'] == '[""]')
                         $claims['companytwitterurls'] = array();
-                    $claims['companytwitterurls'][] = 'https://twitter.com/' . $twituser['screen_name'];
+                    if (!in_array('https://twitter.com/' . $twituser['screen_name'], $claims['companytwitterurls']))
+                        $claims['companytwitterurls'][] = 'https://twitter.com/' . $twituser['screen_name'];
                 }
         }
         $page++;
@@ -82,6 +84,7 @@ while($claims = $GLOBALS['APIDB']->fetchArray($result)) {
         $json = json_decode($query, true);
     }
     if (is_array($claims['companytwitterurls'])) {
+        $claims['companytwitterurls'] = array_unique($claims['companytwitterurls']);
         $sql = "UPDATE `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` SET `companytwitterurls` = '" . $GLOBALS['APIDB']->escape(json_encode($claims['companytwitterurls'])) . "' WHERE `id` = " . $claims['id'];
         if ($GLOBALS['APIDB']->queryF($sql))
             echo "SQL Success: $sql;";

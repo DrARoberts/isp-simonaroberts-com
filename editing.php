@@ -1,8 +1,10 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', true);
 
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'apiconfig.php';
     
-    error_reporting(E_ERROR);
+    error_reporting(E_ALL);
     ini_set('display_errors', true);
     
     $odds = $inner = array();
@@ -44,46 +46,81 @@
     list($pagetitle, $modal) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
     
     session_start();
-    for($ut=time(); $ut < time() - (48 *3600); $ut-- ) {
-        $sql = "SELECT * FROM `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` WHERE md5(concat(`id`, '" . API_URL . "', 'editing', '$ut')) LIKE  '" . $inner['key'] . "' AND `finished` = 0";
-        if ($result = $GLOBALS['APIDB']->queryF($sql)) {
-            if ($GLOBALS['claim'] = $GLOBALS['APIDB']->fetchArray($result)) {
-                if ($GLOBALS['claim']['finished'] != 0)
-                    die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal . '-inactive.php'));
-                
-                if (!isset($inner['mode'])) {
-                    $_SESSION['return-url'] = API_URL . '/v1/' . md5($GLOBALS['claim']['id'].API_URL.'editing'.time()) . "/editing.html";
-                    die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal.'-editing.php'));
+    if (isset($_SESSION[$_REQUEST['key']]) && is_array($_SESSION[$_REQUEST['key']]) && !empty($_SESSION[$_REQUEST['key']]))
+        $GLOBALS['claim'] = $_SESSION[$_REQUEST['key']];
+    
+    if (!isset($GLOBALS['claim'])) {
+        $unixtimes = array();
+        for($step=1; $step < 96 * 8; $step++) {
+            if (!isset($_SESSION[$_REQUEST['key']])) {
+                $unixtimes = array();
+                for($ut = time() - ((($step - 1)) * (1800 / 8)); $ut >= time() - (($step) * (1800 / 8)); $ut-- ) 
+                    $unixtimes[] = $ut;
+                $sql = "SELECT * FROM `" . $GLOBALS['APIDB']->prefix('claimableservices') . "` WHERE (md5(concat(`id`, '" . API_URL . "', 'editing', '" . implode("')) LIKE  '" . $inner['key'] . "' OR md5(concat(`id`, '" . API_URL . "', 'editing', '", $unixtimes) . "')) LIKE  '" . $inner['key'] . "') AND `finished` = 0";
+                $result = $GLOBALS['APIDB']->fetchArray($GLOBALS['APIDB']->queryF($sql));
+                if (is_array($result) && count($result) > 0) {
+                    $GLOBALS['claim'] = $_SESSION[$_REQUEST['key']] = $result;
+                    continue;
+                    continue;
+                    continue;
+                    continue;
                 }
-                
-                if (!$GLOBALS['claimant'] = APICache::read('claimant-'.md5($GLOBALS['claim']['id'].API_URL.'claim')))
-                    $GLOBALS['claimant'] = array();
-                
-                if ($_SERVER['REQUEST_METHOD'] == "POST") {
-                    switch ($inner['type'])
-                    {
-                        case "modal":
-                            if (count($inner['modal'])>0) {
-                                $GLOBALS['claimant']['modals'] = $inner['modal'];
-                            } else {
-                                die(header('Location: ' . API_URL . '/v1/' . md5($GLOBALS['claim']['id'].API_URL.'editing'.time()) . "/editing.html"));
-                            }
-                            break;
-                    }
-                }
-                    
-                switch ($mode) 
-                {
-                    default:
-                        $_SESSION['return-url'] = API_URL . '/v1/' . md5($GLOBALS['claim']['id'].API_URL.'editing'.time()) . "/" . $inner['mode'] . "/editing.html";
-                        die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal.'-'.$inner['mode'].'-editing.php'));
-                        break;
-                }
-                
-                APICache::write('claimant-'.md5($GLOBALS['claim']['id'].API_URL.'claim'), $GLOBALS['claimant'], 3600 * 24 * 7);
-                
             }
         }
     }
+    
+    if (is_array($GLOBALS['claim']) && !empty($GLOBALS['claim'])) {
+        
+        if (!$GLOBALS['claimant'] = APICache::read('claimant-'.md5($GLOBALS['claim']['id'].API_URL.'claim'))) {
+            $GLOBALS['claimant'] = array('modals' => array($modal), 'id' => $GLOBALS['claim']['id']);
+            APICache::write('claimant-'.md5($GLOBALS['claim']['id'].API_URL.'claim'), $GLOBALS['claimant'], 3600 * 24 * 7);
+        }
+            
+        if ($GLOBALS['claim']['finished'] != 0)
+            die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal . '-inactive.php'));
+            
+        if (!isset($_GET['mode'])) {
+            $_SESSION['return-url'] = API_URL . '/v1/' . $_REQUEST['key'] . "/editing.html";
+            die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal.'-editing.php'));
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && count($_POST) > 0) {
+            switch ($inner['type'])
+            {
+                case "modal":
+                    if (count($inner['modal'])>0 && in_array($modal, $inner['modal'])) {
+                        $GLOBALS['claimant']['modals'] = $inner['modal'];
+                    } elseif (count($inner['modal'])>0 && !in_array($modal, $inner['modal'])) {
+                        $GLOBALS['claimant']['modals'] = $inner['modal'];
+                        $redirecturl = API_URL . '/v1/' . $_REQUEST['key'] . "/claims/editing.html";
+                    } else {
+                        $redirecturl = API_URL . '/v1/' . $_REQUEST['key'] . "/editing.html";
+                    }
+                    break;
+                case "countries":
+                    if (count($inner['countries'])>0) {
+                        $GLOBALS['claimant']['countries'] = $inner['countries'];
+                    } else {
+                        $redirecturl = API_URL . '/v1/' . $_REQUEST['key'] . "/countries/editing.html";
+                    }
+                    break;
+            }
+        }
+        
+        APICache::write('claimant-'.md5($GLOBALS['claim']['id'].API_URL.'claim'), $GLOBALS['claimant'], 3600 * 24 * 7);
+        
+        if (isset($redirecturl))
+            die(header('Location: ' . $redirecturl));
+        
+        switch ($mode)
+        {
+            default:
+                $_SESSION['return-url'] = API_URL . '/v1/' . $_REQUEST['key'] . "/" . $inner['mode'] . "/editing.html";
+                die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal.'-'.$inner['mode'].'-editing.php'));
+                break;
+        }
+        
+    }
+    
     die(include(__DIR__ . DS . 'include' . DS . 'data' . DS . $modal.'-missing.php'));
     

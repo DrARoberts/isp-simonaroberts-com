@@ -79,100 +79,6 @@
 	    case 'authkey':
 	        $data = getAuthKey($inner['username'], $inner['password'], $inner['format']);
 	        break;
-	    case 'newsupermaster':
-	    case 'supermaster':
-	        $data = addSupermaster($inner['authkey'], $inner['ip'], $inner['nameserver'], $inner['format']);
-	        break;
-	    case 'domains':
-	        if (!empty($inner['name']) || !empty($inner['master']) &&  !empty($inner['type']))
-	           $data = addDomains($inner['authkey'], $inner['name'], $inner['master'], $inner['type'], $inner['format']);
-	        else 
-	            $data = getDomains($inner['authkey'], $inner['format']);
-	        break;
-	    case 'masters':
-	        $data = getSupermasters($inner['authkey'], $inner['format']);
-	        break;
-	    case 'newzone':
-	    case 'zones':
-	        if (!empty($inner['domain']) && !empty($inner['type']) && !empty($inner['name']))
-	           $data = addZones($inner['authkey'], $inner['domain'], $inner['type'], $inner['name'], $inner['content'], $inner['ttl'], $inner['prio'], $inner['format']);
-	        elseif (!empty($inner['authkey']) && !empty($inner['key']))
-	            $data = getZones($inner['authkey'], $inner['key']);
-	        break;
-	    case 'users':
-	        if (!empty($inner['uname']) && !empty($inner['email']) && !empty($inner['pass']) && !empty($inner['vpass']))
-	            $data = addUser($inner['authkey'], $inner['uname'], $inner['email'], $inner['pass'], $inner['vpass'], $inner['format']);
-	        else
-    	        $data = getUsers($inner['authkey'], $inner['format']);
-	        break;
-	    case 'edit':
-	        switch ($inner['type'])
-	        {
-	            case 'zone':
-	                $data = editRecord('records', $inner['authkey'], getRecordID($inner['key']), $inner, array('name', 'content', 'ttl', 'prio'), $inner['format']);
-	                break;
-	            case 'domain':
-	                $data = editRecord('domains', $inner['authkey'], getDomainID($inner['key']), $inner, array('name', 'master', 'type'), $inner['format']);
-                    break;
-	            case 'master':
-	                $data = editRecord('supermasters', $inner['authkey'], getSupermasterID($inner['key']), $inner, array('ip', 'nameserver'), $inner['format']);
-	                break;
-	            case 'user':
-	                $data = editRecord('users', $inner['authkey'], getUserID($inner['key']), $inner, array('uname', 'email', 'pass', 'vpass'), $inner['format']);
-	                break;
-
-	        }
-	        break;
-	    case 'delete':
-	        switch ($inner['type'])
-	        {
-	            case 'zone':
-	                $data = deleteRecord('records', $inner['authkey'], getRecordID($inner['key']), $inner['format']);
-	                break;
-	            case 'domain':
-	                $data = deleteRecord('domains', $inner['authkey'], getDomainID($inner['key']), $inner['format']);
-	                break;
-	            case 'master':
-	                $data = deleteRecord('supermasters', $inner['authkey'], getSupermasterID($inner['key']), $inner['format']);
-	                break;
-	            case 'user':
-	                $data = deleteRecord('users', $inner['authkey'], getUserID($inner['key']), $inner['format']);
-	                break;
-	                
-	        }
-	        break;
-	}
-	
-	/**
-	 * Buffers Help
-	 */
-	if ($help==true) {
-		if (function_exists("http_response_code"))
-			http_response_code(400);
-		include dirname(__FILE__).'/help.php';
-		exit;
-	}
-	
-	/**
-	 * Calculates Whitelist
-	 */
-	if (function_exists('whitelistGetIP') && function_exists('whitelistGetIPAddy') && defined('MAXIMUM_QUERIES'))
-	{
-		session_start();
-		if (!in_array(whitelistGetIP(true), whitelistGetIPAddy())) {
-			if (isset($_SESSION['reset']) && $_SESSION['reset']<microtime(true))
-				$_SESSION['hits'] = 0;
-			if ($_SESSION['hits']<=MAXIMUM_QUERIES) {
-				if (!isset($_SESSION['hits']) || $_SESSION['hits'] = 0)
-					$_SESSION['reset'] = microtime(true) + 3600;
-				$_SESSION['hits']++;
-			} else {
-				header("HTTP/1.0 404 Not Found");
-				if (function_exists("http_response_code"))
-					http_response_code(404);
-				exit;
-			}
-		}
 	}
 	
 	/**
@@ -189,7 +95,10 @@
 			echo var_dump($data, true);
 			echo '</pre>';
 			break;
-		case 'raw':
+		case 'asp':
+		    echo convertPHP2ASP("<?php\n\n \$GLOBALS['" . $inner['mode'] . "'] = " . var_export($data, true) . ";\n\n?>");
+		    break;
+		case 'php':
 			echo "<?php\n\n return " . var_export($data, true) . ";\n\n?>";
 			break;
 		case 'json':

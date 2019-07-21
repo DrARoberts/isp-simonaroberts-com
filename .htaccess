@@ -3,7 +3,13 @@ php_value upload_max_filesize 10M
 php_value post_max_size 10M
 
 RewriteEngine On
+RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/([a-z0-9]{32})/(*.?)/callback.(html|asp|php|serial|json|xml)$ ./callback.php?version=$1&mode=$2&state=$3&key=$4&format=$5 [L,NC,QSA]
+RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/(*.?)/auth.(html|asp|php|serial|json|xml)$ ./auth.php?version=$1&mode=$2&key=$3&format=$4 [L,NC,QSA]
+
+RewriteEngine On
 RewriteRule ^([a-z0-9]{2})/addclaim.api$ ./index.php?version=$1 [L,NC,QSA]
 RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/claim.html$ ./claim.php?version=$1&key=$2 [L,NC,QSA]
+RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/(countries|departments|company|departmental|images|modals|claims)/editing.html$ ./editing.php?version=$1&key=$2&mode=$3 [L,NC,QSA]
+RewriteRule ^([a-z0-9]{2})/([a-z0-9]{32})/editing.html$ ./editing.php?version=$1&key=$2 [L,NC,QSA]
 
 

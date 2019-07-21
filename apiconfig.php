@@ -54,18 +54,80 @@ ini_set("zlib.output_compression_level", -1);
 define('API_CACHE_SECONDS', 93);
 
 // Seeds the random
-mt_srand(mt_rand(time(), microtime(true) * time() * time()));
-mt_srand(mt_rand(time(), microtime(true) * time() * time()));
-mt_srand(mt_rand(time(), microtime(true) * time() * time()));
-mt_srand(mt_rand(time(), microtime(true) * time() * time()));
-srand(mt_rand(time(), microtime(true) * time() * time()));
+mt_srand(mt_rand(-time(), time()), MT_RAND_MT19937);
+mt_srand(mt_rand(-microtime(true) * time(), microtime(true) * time()), MT_RAND_MT19937);
+mt_srand(mt_rand(-microtime(true) * time() * time(), microtime(true) * time() * time()), MT_RAND_MT19937);
+mt_srand(mt_rand(-microtime(true) * time() * time() * time(), microtime(true) * time() * time() * time()), MT_RAND_MT19937);
+mt_srand(mt_rand(-microtime(true) * time() * time() * time() * time(), microtime(true) * time() * time() * time() * time()), MT_RAND_MT19937);
+srand(mt_rand(-microtime(true) * time() * time() * time() * time(), microtime(true) * time() * time() * time() * time()));
 
-$sql = "SELECT `twitter-user`, `consumer-api-key`, `consumer-api-secret-key`, `access-token-key`, `access-token-secret-key` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE `hostname` LIKE '" . parse_url(API_URL, PHP_URL_HOST) . "'";
-list($twitteruser, $consumerkey, $consumersecretkey, $accesstoken, $accesstokensecret) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
+/*
+ * Gets twitter details for the hostname
+ */
+$sql = "SELECT `id`, `tweets-next`, `tweets-hour`, `tweets-average-hour`, `twitter-user`, `consumer-api-key`, `consumer-api-secret-key`, `access-token-key`, `access-token-secret-key` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE `hostname` LIKE '" . parse_url(API_URL, PHP_URL_HOST) . "'";
+list($listid, $tweetnext, $tweetshour, $tweetsaveragehour, $twitteruser, $consumerkey, $consumersecretkey, $accesstoken, $accesstokensecret) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF($sql));
 $GLOBALS['twitter']['settings']['oauth_access_token'] = $accesstoken;
 $GLOBALS['twitter']['settings']['oauth_access_token_secret'] = $accesstokensecret;
 $GLOBALS['twitter']['settings']['consumer_key'] = $consumerkey;
 $GLOBALS['twitter']['settings']['consumer_secret'] = $consumersecretkey;
 $GLOBALS['twitter']['username'] = $twitteruser;
+$GLOBALS['twitter']['listid'] = $listid;
+$GLOBALS['twitter']['tweetsnext'] = $tweetsnext;
+$GLOBALS['twitter']['tweetshour'] = $tweetshour;
+$GLOBALS['twitter']['tweetsaveragehour'] = $tweetsaveragehour;
 
+/*
+ * Gets all list modals
+ */
+global $modalhosts, $modalsyndicate;
+$modalsyndicate = $modalhosts = array();
 
+$sql = "SELECT DISTINCT `modal`, `title`, `hostname`, `ssl` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE `state` = 'Online' ORDER BY RAND() ASC";
+$result = $GLOBALS['APIDB']->queryF($sql);
+while( $row = $GLOBALS['APIDB']->fetchArray($result))
+    $modalhosts[$row['modal']][$row['hostname']][$row['ssl']] = $row['title'];
+
+$sql = "SELECT DISTINCT `state`, `key`, `modal`, `title`, `hostname`, `ssl`, `callback-uri`, `auth-uri` FROM `" . $GLOBALS['APIDB']->prefix('lists') . "` WHERE (`state` IN ('Online', 'Query') AND `sydnicated` = 'Yes') OR `state` IN ('Ignore') ORDER BY RAND() ASC";
+$result = $GLOBALS['APIDB']->queryF($sql);
+while( $row = $GLOBALS['APIDB']->fetchArray($result)) {
+    $modalsyndicate[$row['state']][$row['modal']][$row['hostname']][$row['ssl']][$row['key']]['title'] = $row['title'];
+    $modalsyndicate[$row['state']][$row['modal']][$row['hostname']][$row['ssl']][$row['key']]['callback-uri'] = $row['callback-uri'];
+    $modalsyndicate[$row['state']][$row['modal']][$row['hostname']][$row['ssl']][$row['key']]['auth-uri'] = $row['auth-uri'];
+}
+
+/*
+ * Updates the key hasing fields as per list modals
+ */
+$keytables = array('lists', 'claimableservices', 'services');
+$reserved = array('key-session');
+
+foreach($keytables as $table) {
+    $create = array();
+    $sql = "SHOW FIELDS FROM `" . $GLOBALS['APIDB']->prefix($table) . '`';
+    $results = $GLOBALS['APIDB']->queryF($sql);
+    $keyfieldwords = array_keys($modalhosts);
+    while($row = $GLOBALS['APIDB']->fetchArray($results)) {
+        foreach($keyfieldwords as $id => $keyfield) {
+            if ($row['Field'] == "key-$keyfield") {
+                $lastfield = $row['Field'];
+                unset($keyfieldwords[$id]);
+            }
+        }
+    }
+    if (!empty($keyfieldwords)) 
+        foreach($keyfieldwords as $id => $keyfield) {
+            if (!in_array("key-$keyfield", $reserved)) {
+                $create["key-$keyfield"] = "varchar(128)";
+                $create["key-$keyfield"]['default'] = "";
+                if (!empty($lastfield))
+                    $create[$field]['after'] = $lastfield;
+            }
+        }
+    if (count($create) > 0)
+        foreach($create as $field => $values) {
+            if (isset($values['default']))
+                @$GLOBALS['APIDB']->queryF("ALTER TABLE `" . $GLOBALS['APIDB']->prefix($table) . "` ADD COLUMN `$field` " . $values['type']. " NOT NULL DEFAULT '" . $values['default'] . (!empty($values['after'])?"  AFTER `" . $values['after'] . "`":""));
+            else
+                @$GLOBALS['APIDB']->queryF("ALTER TABLE `" . $GLOBALS['APIDB']->prefix($table) . "` ADD COLUMN `$field` " . $values['type'] . (!empty($values['after'])?"  AFTER `" . $values['after'] . "`":""));
+        }
+ }

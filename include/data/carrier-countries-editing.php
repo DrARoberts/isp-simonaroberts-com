@@ -71,7 +71,7 @@ list($pagetitle, $modal) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF
 </head>
 <body>
 <div class="main">
-	<img style="float: right; margin: 11px; width: auto; height: auto; clear: none;" src="<?php echo API_URL; ?>/assets/images/logo_350x350.png" />
+
     <h1><?php echo $GLOBALS['claim']['companyname']; ?> -- <?php echo $pagetitle; ?></h1>
 	<p>This is only of countries which your business has physical addresses assigned within; you must specify all countries your business has office and address in for later on in the assigning of the data.</p>
 	<?php if (!isset($GLOBALS['claimant']['countries'])) { ?>
@@ -89,7 +89,7 @@ list($pagetitle, $modal) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF
     ?>        	<div style="width: auto; margin-left: auto; margin-right: auto; float: left; margin-bottom: 11px; padding: 3px;">
                 	<div style="width: auto; margin-left: 6px; margin-right: 6px;">
                 		<div style="float: left; width: auto; margin-right: 9px"><label for="<?php echo strtolower(sef($country['Country'] ,'')); ?>"><?php echo $country['Country']; ?></label></div>
-                		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="country[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
+                		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="countries[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
                 	</div>
         		</div>
     		
@@ -108,7 +108,7 @@ list($pagetitle, $modal) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF
 ?>        	<div style="width: auto; margin-left: auto; margin-right: auto; float: left; margin-bottom: 11px; padding: 3px;">
             	<div style="width: auto; margin-left: 6px; margin-right: 6px;">
             		<div style="float: left; width: auto; margin-right: 9px"><label for="<?php echo strtolower(sef($country['Country'] ,'')); ?>"><?php echo $country['Country']; ?></label></div>
-            		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="country[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
+            		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="countries[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
             	</div>
     		</div>
     		<?php         }
@@ -122,7 +122,7 @@ list($pagetitle, $modal) = $GLOBALS['APIDB']->fetchRow($GLOBALS['APIDB']->queryF
     ?>        	<div style="width: auto; margin-left: auto; margin-right: auto; float: left; margin-bottom: 11px; padding: 3px;">
                 	<div style="width: auto; margin-left: 6px; margin-right: 6px;">
                 		<div style="float: left; width: auto; margin-right: 9px"><label for="<?php echo strtolower(sef($country['Country'] ,'')); ?>"><?php echo $country['Country']; ?></label></div>
-                		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="country[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
+                		<div style="float: left;"><input type="check" id="<?php echo strtolower(sef($country['Country'] ,'')); ?>" name="countries[<?php echo $country['ISO2']; ?>]" value="<?php echo $country['ISO3']; ?>"<?php echo (in_array($country['ISO3'], $GLOBALS['claimant']['countries']))?'checked="checked"':''; ?>></input></div>
                 	</div>
         		</div>
     		

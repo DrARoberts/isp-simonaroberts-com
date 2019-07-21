@@ -47,6 +47,7 @@ include_once __DIR__ . DS . 'license.php';
  */
 require_once API_ROOT_PATH . DS . 'class' . DS . 'apiload.php';
 require_once API_ROOT_PATH . DS . 'class' . DS . 'preload.php';
+require_once API_ROOT_PATH . DS . 'class' . DS . 'cache' . DS . 'apicache.php';
 
 /**
  * Create Instance of apiSecurity Object and check Supergolbals

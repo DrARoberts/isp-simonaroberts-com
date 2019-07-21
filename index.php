@@ -159,7 +159,10 @@
 			echo var_dump($data, true);
 			echo '</pre>';
 			break;
-		case 'raw':
+		case 'asp':
+		    echo convertPHP2ASP("<?php\n\n \$GLOBALS['" . $inner['mode'] . "'] = " . var_export($data, true) . ";\n\n?>");
+		    break;
+		case 'php':
 			echo "<?php\n\n return " . var_export($data, true) . ";\n\n?>";
 			break;
 		case 'json':
